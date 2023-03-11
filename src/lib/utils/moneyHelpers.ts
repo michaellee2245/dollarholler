@@ -20,7 +20,16 @@ export const centsToDollars = (cents: number): string => {
     const addDecimals = twoDecimals(dollars);
     return addThousandsSeparator(addDecimals);
 }
+/** 
+* Takes a dollar amount and converts it to cents
 
+* @param {number} dollars - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
+* @return {number} Brief description of the returning value here.
+*/
+
+export const dollarsToCents = (dollars: number): number => {
+    return dollars * 100;
+}
 /*
     * Takes a number and returns the number with 2 decimal places
     * @param {number} myNum

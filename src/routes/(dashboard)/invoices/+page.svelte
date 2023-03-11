@@ -9,6 +9,10 @@
 	import InvoiceRowHeader from './InvoiceRowHeader.svelte';
 	import Portal from '$lib/components/Portal.svelte';
 	import Button from '$lib/components/Button.svelte';
+	import SlidePanel from '$lib/components/SlidePanel.svelte';
+	import InvoiceForm from './InvoiceForm.svelte';
+
+	let isInvoiceFormShowing: boolean = false;
 
 	onMount(() => {
 		loadInvoices();
@@ -32,7 +36,12 @@
 	{/if}
 
 	<!-- New invoice button -->
-	<Button label="+ Invoice" onClick={() => {}} />
+	<Button
+		label="+ Invoice"
+		onClick={() => {
+			isInvoiceFormShowing = true;
+		}}
+	/>
 </div>
 
 <!-- list of invoices -->
@@ -55,5 +64,11 @@
 	{/if}
 </div>
 
-<style lang="postcss">
-</style>
+<!-- slide panel -->
+{#if isInvoiceFormShowing}
+	<SlidePanel
+		on:closePanel={() => {
+			isInvoiceFormShowing = false;
+		}}><InvoiceForm /></SlidePanel
+	>
+{/if}
