@@ -8,6 +8,23 @@ export const sumLineItems = (lineItems: LineItem[] | undefined): number => {
 
     return lineItems.reduce((prevValue, curValue) => prevValue + curValue.amount, 0)
 }
+/** 
+* Takes the lineItems and the discount and determines the invoice total
+* @param {Array|undefined} lineItems - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
+* @param {number|undefined} discount - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
+* @return {number} Brief description of the returning value here.
+*/
+
+
+export const invoiceTotal = (lineItems: LineItem[] | undefined, discount: number | undefined): number => {
+    const lineItemSum = sumLineItems(lineItems)
+    if (discount) {
+        const invoiceDiscount = lineItemSum * (discount / 100);
+        return lineItemSum - invoiceDiscount;
+    }
+    return lineItemSum
+}
+
 
 /*
     * Takes and returns a dollar amount (USD), formatted with commas and 2 decimals places
