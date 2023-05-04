@@ -46,8 +46,6 @@
 
 <!-- list of invoices -->
 <div>
-	<Portal><div>Invoice Form</div></Portal>
-
 	<!-- invoices -->
 	{#if $invoices === null}
 		Loading...
