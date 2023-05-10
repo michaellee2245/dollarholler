@@ -13,6 +13,7 @@
 	export let isAnimated = true;
 	export let iconLeft: (new (...args: any[]) => SvelteComponent) | null = null;
 	export let iconRight: (new (...args: any[]) => SvelteComponent) | null = null;
+	export let height: 'short' | 'regular' = 'regular';
 </script>
 
 <button
@@ -24,6 +25,7 @@
 	class:outline={style === 'outline'}
 	class:textOnly={style === 'textOnly'}
 	class:textOnlyDestructive={style === 'textOnlyDestructive'}
+	class:short={height === 'short'}
 	class:isAnimated
 >
 	{#if iconLeft}
@@ -58,5 +60,8 @@
 	}
 	.textOnly {
 		@apply bg-transparent px-0 text-lavenderIndigo no-underline hover:underline;
+	}
+	.short {
+		@apply !py-1;
 	}
 </style>

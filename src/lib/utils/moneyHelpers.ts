@@ -8,6 +8,20 @@ export const sumLineItems = (lineItems: LineItem[] | undefined): number => {
 
     return lineItems.reduce((prevValue, curValue) => prevValue + curValue.amount, 0)
 }
+
+/** 
+    * Converting Cents to Dollars without commas
+    * @param {number} cents
+    * @returns {string}
+*/
+
+export const centsToDollarsWithoutCommas = (cents: number): string => {
+    const dollars = cents / 100;
+    return twoDecimals(dollars);
+
+}
+
+
 /** 
 * Takes the lineItems and the discount and determines the invoice total
 * @param {Array|undefined} lineItems - Brief description of the parameter here. Note: For other notations of data types, please refer to JSDocs: DataTypes command.
@@ -26,7 +40,7 @@ export const invoiceTotal = (lineItems: LineItem[] | undefined, discount: number
 }
 
 
-/*
+/**
     * Takes and returns a dollar amount (USD), formatted with commas and 2 decimals places
     * @param {number} cents
     * @returns {string}
@@ -47,7 +61,7 @@ export const centsToDollars = (cents: number): string => {
 export const dollarsToCents = (dollars: number): number => {
     return dollars * 100;
 }
-/*
+/**
     * Takes a number and returns the number with 2 decimal places
     * @param {number} myNum
     * @returns {string}
@@ -58,7 +72,7 @@ export const twoDecimals = (myNum: number): string => {
 
 }
 
-/*
+/**
     * Adds a thousands separator to our string
     * @param {string} myNum
     * @returns {string}
@@ -68,7 +82,7 @@ export const addThousandsSeparator = (myNum: string): string => {
     return myNum.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
 }
 
-/*
+/**
     * Takes all the invoices and finds the total
     * @param {Invoice} invoices
     * @returns {number}
