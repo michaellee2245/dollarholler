@@ -33,6 +33,15 @@ interface LineItem {
 
 }
 
+interface Settings {
+    city: string
+    email: string
+    myName: string
+    state: string
+    street: string
+    zip: string
+}
+
 type NotificationType = "success" | "error" | "info" | "warning";
 
 interface Snackbar {

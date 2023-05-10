@@ -182,5 +182,13 @@
             "state": "TN",
             "zip": "87654"
         }
-    ]
+    ],
+    "settings": {
+        "city": "Coolville",
+        "email": "michael@example.com",
+        "myName": "Michael Lee",
+        "state": "TN",
+        "street": "123 Awesome Street",
+        "zip": "54321"
+    }
 }
