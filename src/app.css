@@ -97,6 +97,10 @@
         grid-area:  trash;
     }
 
+    .client-table{
+        @apply grid grid-cols-clientTableMobile lg:grid-cols-clientTable mb-3 w-full gap-x-4 px-4 lg:px-6
+    }
+
     .button{
         @apply relative flex items-center whitespace-nowrap rounded-lg px-5 py-2 font-sansSerif text-base font-black lg:px-10 lg:py-3 lg:text-xl
     }
