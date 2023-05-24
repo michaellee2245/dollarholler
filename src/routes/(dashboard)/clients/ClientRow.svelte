@@ -8,21 +8,51 @@
 	import Archive from '$lib/components/Icon/Archive.svelte';
 	import Tag from '$lib/components/Tag.svelte';
 	import { ClientStatus } from '../../../enums';
+	import { centsToDollars, sumInvoices } from '$lib/utils/moneyHelpers';
 
 	export let client: Client;
+	console.log({ client });
 
 	let isAdditionalMenuShowing: boolean = false;
+
+	const receivedInvoices = () => {
+		if (client?.invoices) {
+			// find all invoices that have been paid
+			const paidInvoices = client.invoices.filter((invoice) => invoice.invoiceStatus === 'paid');
+
+			//get the sum of all of the invoices
+			return sumInvoices(paidInvoices);
+		}
+		return 0;
+	};
+
+	const balanceInvoices = () => {
+		if (client?.invoices) {
+			// find all invoices that have not been paid
+			const paidInvoices = client.invoices.filter((invoice) => invoice.invoiceStatus !== 'paid');
+
+			//get the sum of all of the invoices
+			return sumInvoices(paidInvoices);
+		}
+		return 0;
+	};
 </script>
 
-<div class="client-table rounded-lg bg-white py-3 shadow-tableRow lg:py-6">
-	<div><Tag className="ml-auto" label={client.clientStatus} /></div>
-	<div class="truncate whitespace-nowrap text-base font-bold lg:text-xl">{client.name}</div>
-	<div class="text-right font-mono text-sm font-bold lg:text-lg">$504.00</div>
-	<div class="text-right font-mono text-sm font-bold text-scarlet lg:text-lg">$240.00</div>
-	<div class="relative hidden items-center justify-center lg:flex">
-		<a href="#" class="text-pastelPurple hover:text-daisyBush"><View /></a>
+<div class="client-table client-row rounded-lg bg-white py-3 shadow-tableRow lg:py-6">
+	<div class="status"><Tag className="ml-auto" label={client.clientStatus} /></div>
+	<div class="client-name truncate whitespace-nowrap text-base font-bold lg:text-xl">
+		{client.name}
+	</div>
+	<div class="received text-right font-mono text-sm font-bold lg:text-lg">
+		${centsToDollars(receivedInvoices())}
+	</div>
+	<div class="balance text-right font-mono text-sm font-bold text-scarlet lg:text-lg">
+		${centsToDollars(balanceInvoices())}
 	</div>
 	<div class="relative hidden items-center justify-center lg:flex">
+		<a href="#" class="view text-pastelPurple hover:text-daisyBush"><View /></a>
+	</div>
+	<div class="three-dots relative hidden items-center justify-center lg:flex">
 		<button
 			class="text-pastelPurple hover:text-daisyBush"
 			on:click={() => {
@@ -58,3 +88,44 @@
 		{/if}
 	</div>
 </div>
+
+<style lang="postcss">
+	.client-row {
+		grid-template-areas:
+			'clientName status'
+			'received balance';
+	}
+
+	@media (min-width: 1024px) {
+		.client-row {
+			grid-template-areas: 'status clientName received balance view threeDots';
+		}
+	}
+
+	.client-name {
+		grid-area: clientName;
+	}
+
+	.status {
+		grid-area: status;
+	}
+
+	.received {
+		@apply text-left lg:text-right;
+		grid-area: received;
+	}
+	.received:before {
+		@apply block text-xs font-bold lg:hidden;
+		content: 'Received: ';
+	}
+
+	.balance {
+		grid-area: balance;
+	}
+	.balance:before {
+		@apply block text-xs font-bold lg:hidden;
+		content: 'Balance: ';
+	}
+	.view {
+	}
+</style>
