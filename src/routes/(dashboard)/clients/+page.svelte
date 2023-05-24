@@ -5,6 +5,7 @@
 	import ClientRowHeader from './ClientRowHeader.svelte';
 	import { clients, loadClients } from '$lib/stores/ClientStore';
 	import { onMount } from 'svelte';
+	import BlankState from './BlankState.svelte';
 
 	onMount(() => {
 		loadClients();
@@ -19,11 +20,11 @@
 	class="md:item-center mb-7 flex flex-col-reverse items-start justify-between gap-y-6 md:flex-row md:gap-y-4 lg:mb-16"
 >
 	<!-- Search Field -->
-	<!-- {#if $invoices.length > 0} -->
-	<Search />
-	<!-- {:else}
+	{#if $clients.length > 0}
+		<Search />
+	{:else}
 		<div />
-	{/if} -->
+	{/if}
 
 	<!-- New invoice button -->
 	<Button
@@ -39,7 +40,7 @@
 	{#if $clients === null}
 		Loading...
 	{:else if $clients.length <= 0}
-		Blank State
+		<BlankState />
 	{:else}
 		<!-- client header row-->
 		<ClientRowHeader />

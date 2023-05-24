@@ -7,7 +7,6 @@
 	import Activate from '$lib/components/Icon/Activate.svelte';
 	import Archive from '$lib/components/Icon/Archive.svelte';
 	import Tag from '$lib/components/Tag.svelte';
-	import { ClientStatus } from '../../../enums';
 	import { centsToDollars, sumInvoices } from '$lib/utils/moneyHelpers';
 
 	export let client: Client;
