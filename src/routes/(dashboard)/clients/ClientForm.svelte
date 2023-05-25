@@ -33,8 +33,9 @@
 	{#if formStatus === 'create'}
 		Add
 	{:else}
-		Edit a Client
+		Edit
 	{/if}
+	a Client
 </h2>
 
 <form class="grid grid-cols-6 gap-x-5 " on:submit|preventDefault={handleSubmit}>
