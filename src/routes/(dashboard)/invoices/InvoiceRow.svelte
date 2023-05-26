@@ -11,6 +11,7 @@
 	import SlidePanel from '$lib/components/SlidePanel.svelte';
 	import InvoiceForm from './InvoiceForm.svelte';
 	import ConfirmDelete from './ConfirmDelete.svelte';
+	import { clickOutside } from '$lib/actions/ClickOutside';
 
 	export let invoice: Invoice;
 	let isAdditionalMenuShowing = false;
@@ -63,7 +64,12 @@
 		<a href={`/invoices/${invoice.id}`} class="text-pastelPurple hover:text-daisyBush"><View /></a>
 	</div>
 
-	<div class="lg:center moreButton relative hidden text-sm lg:flex lg:text-lg">
+	<div
+		class="lg:center moreButton relative hidden text-sm lg:flex lg:text-lg"
+		use:clickOutside={() => {
+			isAdditionalMenuShowing = false;
+		}}
+	>
 		<button
 			class="text-pastelPurple hover:text-daisyBush"
 			on:click={() => {
