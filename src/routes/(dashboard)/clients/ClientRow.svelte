@@ -11,12 +11,14 @@
 	import { centsToDollars, sumInvoices } from '$lib/utils/moneyHelpers';
 	import SlidePanel from '$lib/components/SlidePanel.svelte';
 	import ClientForm from './ClientForm.svelte';
+	import { swipe } from '$lib/actions/Swipe';
+	import Cancel from '$lib/components/Icon/Cancel.svelte';
 
 	export let client: Client;
-	console.log({ client });
 
 	let isAdditionalMenuShowing = false;
 	let isClientFormShowing = false;
+	let triggerReset = false;
 
 	const closePanel = () => {
 		isClientFormShowing = false;
@@ -48,61 +50,114 @@
 		isClientFormShowing = true;
 		isAdditionalMenuShowing = false;
 	};
+
+	const handleArchiveClient = () => {
+		client.clientStatus = 'archive';
+		isAdditionalMenuShowing = false;
+	};
+
+	const handleActivateClient = () => {
+		client.clientStatus = 'active';
+		isAdditionalMenuShowing = false;
+	};
+
+	const handleDeleteClient = () => {
+		console.log('deleting');
+	};
 </script>
 
-<div class="client-table client-row rounded-lg bg-white py-3 shadow-tableRow lg:py-6">
-	<div class="status"><Tag className="ml-auto" label={client.clientStatus} /></div>
-	<div class="client-name truncate whitespace-nowrap text-base font-bold lg:text-xl">
-		{client.name}
-	</div>
-	<div class="received text-right font-mono text-sm font-bold lg:text-lg">
-		${centsToDollars(receivedInvoices())}
-	</div>
-	<div class="balance text-right font-mono text-sm font-bold text-scarlet lg:text-lg">
-		${centsToDollars(balanceInvoices())}
-	</div>
-	<div class="relative hidden items-center justify-center lg:flex">
-		<a href={`/clients/${client.id}`} class="view text-pastelPurple hover:text-daisyBush"
-			><View /></a
-		>
-	</div>
+<div class="relative">
 	<div
-		class="three-dots relative hidden items-center justify-center lg:flex"
-		use:clickOutside={() => (isAdditionalMenuShowing = false)}
+		class="client-table client-row relative z-row rounded-lg bg-white py-3 shadow-tableRow lg:py-6"
+		use:swipe={{ triggerReset }}
+		on:outOfView={() => {
+			triggerReset = false;
+		}}
 	>
-		<button
-			class="text-pastelPurple hover:text-daisyBush"
-			on:click={() => {
-				isAdditionalMenuShowing = !isAdditionalMenuShowing;
-			}}><ThreeDots /></button
+		<div class="status"><Tag className="ml-auto" label={client.clientStatus} /></div>
+		<div class="client-name truncate whitespace-nowrap text-base font-bold lg:text-xl">
+			{client.name}
+		</div>
+		<div class="received text-right font-mono text-sm font-bold lg:text-lg">
+			${centsToDollars(receivedInvoices())}
+		</div>
+		<div class="balance text-right font-mono text-sm font-bold text-scarlet lg:text-lg">
+			${centsToDollars(balanceInvoices())}
+		</div>
+		<div class="relative hidden items-center justify-center lg:flex">
+			<a href={`/clients/${client.id}`} class="view text-pastelPurple hover:text-daisyBush"
+				><View /></a
+			>
+		</div>
+		<div
+			class="three-dots relative hidden items-center justify-center lg:flex"
+			use:clickOutside={() => (isAdditionalMenuShowing = false)}
 		>
+			<button
+				class="text-pastelPurple hover:text-daisyBush"
+				on:click={() => {
+					isAdditionalMenuShowing = !isAdditionalMenuShowing;
+				}}><ThreeDots /></button
+			>
 
-		{#if isAdditionalMenuShowing}
-			<AdditionalOptions
-				options={[
-					{ label: 'Edit', icon: Edit, onClick: () => handleEdit(), disabled: false },
-					{ label: 'Delete', icon: Trash, onClick: () => console.log('deleting'), disabled: false },
-					{
-						label: 'Archive',
-						icon: Archive,
-						onClick: () => {
-							client.clientStatus = 'archive';
-							isAdditionalMenuShowing = false;
+			{#if isAdditionalMenuShowing}
+				<AdditionalOptions
+					options={[
+						{ label: 'Edit', icon: Edit, onClick: () => handleEdit(), disabled: false },
+						{ label: 'Delete', icon: Trash, onClick: handleDeleteClient, disabled: false },
+						{
+							label: 'Archive',
+							icon: Archive,
+							onClick: handleArchiveClient,
+							disabled: client.clientStatus === 'archive'
 						},
-						disabled: client.clientStatus === 'archive'
-					},
-					{
-						label: 'Activate',
-						icon: Activate,
-						onClick: () => {
-							client.clientStatus = 'active';
-							isAdditionalMenuShowing = false;
-						},
-						disabled: client.clientStatus === 'active'
-					}
-				]}
-			/>
+						{
+							label: 'Activate',
+							icon: Activate,
+							onClick: handleActivateClient,
+							disabled: client.clientStatus === 'active'
+						}
+					]}
+				/>
+			{/if}
+		</div>
+	</div>
+
+	<!--Swipe to reveal content -->
+	<div class="swipe-revealed-actions">
+		<button
+			class="action-button"
+			on:click={() => {
+				triggerReset = true;
+			}}
+		>
+			<Cancel width={32} height={32} />
+			Cancel
+		</button>
+		<button class="action-button" on:click={handleEdit}>
+			<Edit width={32} height={32} />
+			Edit
+		</button>
+		{#if client.clientStatus === 'active'}
+			<button class="action-button" on:click={handleArchiveClient}>
+				<Archive width={32} height={32} />
+				Archive
+			</button>
 		{/if}
+		{#if client.clientStatus === 'archive'}
+			<button class="action-button" on:click={handleActivateClient}>
+				<Activate width={32} height={32} />
+				Activate
+			</button>
+		{/if}
+		<button class="action-button" on:click={handleDeleteClient}>
+			<Trash width={32} height={32} />
+			Delete
+		</button>
+		<a href={`/clients/${client.id}`} class="action-button">
+			<View width={32} height={32} />
+			View
+		</a>
 	</div>
 </div>
 

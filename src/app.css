@@ -109,8 +109,13 @@
     }
     .auth-button{
         @apply mt-6 min-h-[3.5rem] w-full rounded-lg bg-robinEggBlue py-3 px-4 text-xl font-bold text-daisyBush transition-all duration-200 hover:-translate-y-1 hover:shadow-lg
-
     }
+    .swipe-revealed-actions{
+        @apply absolute inset-0 z-rowActions flex h-full w-full items-center justify-around
+    }
+    .action-button {
+		@apply flex cursor-pointer flex-col items-center justify-center font-bold text-daisyBush;
+	}
 }
 
 @layer utilities {
