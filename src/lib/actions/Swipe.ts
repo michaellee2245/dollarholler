@@ -1,13 +1,16 @@
+import type { Action } from 'svelte/action'
 import { spring } from "svelte/motion";
 
 interface SwipeProps {
-
+    triggerReset?: boolean;
 }
 
-export function swipe(node: HTMLElement, params: SwipeProps) {
+export const swipe: Action<HTMLElement, SwipeProps> = (node, params) => {
     let x: number;
     let startingX: number;
     const elementWidth = node.clientWidth;
+    let triggerReset = params?.triggerReset || false
+
     const coordinates = spring(
         { x: 0, y: 0 },
         {
@@ -21,6 +24,20 @@ export function swipe(node: HTMLElement, params: SwipeProps) {
     })
 
     node.addEventListener('mousedown', handleMouseDown)
+
+    function resetCard() {
+        coordinates.update(() => {
+            return { x: 0, y: 0 }
+        })
+        triggerReset = false;
+    }
+
+    function outOfView() {
+        //dispatch event when card is out of view
+        node.dispatchEvent(
+            new CustomEvent('outOfView')
+        )
+    }
 
     function handleMouseDown(event: MouseEvent) {
 
@@ -55,22 +72,17 @@ export function swipe(node: HTMLElement, params: SwipeProps) {
         const rightSnapX = 0;
         const movement = startingX - endingX;
 
-
         //swiped left
         if (movement > 20) {
             x = leftSnapX
-            updateCoordinates(x)
+            outOfView()
         }
-
         //swiped right
-        if (movement < 20) {
+        else {
             x = rightSnapX;
-            updateCoordinates(x)
         }
-
-
+        updateCoordinates(x)
     }
-
     function handleMouseUp(event: MouseEvent) {
         const endingX = event.clientX;
         moveCardOver(endingX);
@@ -79,8 +91,10 @@ export function swipe(node: HTMLElement, params: SwipeProps) {
     }
 
     return {
-        update() {
-
+        update(newParams: SwipeProps) {
+            if (newParams.triggerReset) {
+                resetCard()
+            }
         },
         destroy() {
             node.removeEventListener('mousedown', handleMouseDown)

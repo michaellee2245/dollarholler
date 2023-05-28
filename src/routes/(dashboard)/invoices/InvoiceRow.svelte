@@ -13,12 +13,14 @@
 	import ConfirmDelete from './ConfirmDelete.svelte';
 	import { clickOutside } from '$lib/actions/ClickOutside';
 	import { swipe } from '$lib/actions/Swipe';
+	import Cancel from '$lib/components/Icon/Cancel.svelte';
 
 	export let invoice: Invoice;
 	let isAdditionalMenuShowing = false;
 	let isOptionDisabled = false;
 	let isModalShowing = false;
 	let isInvoiceFormShowing = false;
+	let triggerReset = false;
 
 	const handleDelete = () => {
 		isModalShowing = true;
@@ -50,46 +52,82 @@
 	};
 </script>
 
-<!-- invoices -->
-<div
-	class="invoice-table invoice-row items-center rounded-lg bg-white py-3 shadow-tableRow lg:py-6"
-	use:swipe
->
-	<div class="status"><Tag className="ml-auto lg:ml-0" label={getInvoiceLabel()} /></div>
-	<div class="dueDate text-sm lg:text-lg">{convertDate(invoice.dueDate)}</div>
-	<div class="invoiceNumber text-sm lg:text-lg">{invoice.invoiceNumber}</div>
-	<div class="clientName truncate whitespace-nowrap text-xl font-bold">{invoice.client.name}</div>
-	<div class="amount text-right font-mono text-sm font-bold lg:text-lg">
-		${centsToDollars(invoiceTotal(invoice.lineItems, invoice.discount))}
-	</div>
-	<div class="lg:center viewButton hidden text-sm lg:flex lg:text-lg">
-		<a href={`/invoices/${invoice.id}`} class="text-pastelPurple hover:text-daisyBush"><View /></a>
-	</div>
-
+<div class="relative">
+	<!-- invoices -->
 	<div
-		class="lg:center moreButton relative hidden text-sm lg:flex lg:text-lg"
-		use:clickOutside={() => {
-			isAdditionalMenuShowing = false;
+		class="invoice-table invoice-row relative z-row items-center rounded-lg bg-white py-3 shadow-tableRow lg:py-6"
+		use:swipe={{ triggerReset }}
+		on:outOfView={() => {
+			triggerReset = false;
 		}}
 	>
-		<button
-			class="text-pastelPurple hover:text-daisyBush"
-			on:click={() => {
-				isAdditionalMenuShowing = !isAdditionalMenuShowing;
-			}}><ThreeDots /></button
+		<div class="status"><Tag className="ml-auto lg:ml-0" label={getInvoiceLabel()} /></div>
+		<div class="dueDate text-sm lg:text-lg">{convertDate(invoice.dueDate)}</div>
+		<div class="invoiceNumber text-sm lg:text-lg">{invoice.invoiceNumber}</div>
+		<div class="clientName truncate whitespace-nowrap text-xl font-bold">{invoice.client.name}</div>
+		<div class="amount text-right font-mono text-sm font-bold lg:text-lg">
+			${centsToDollars(invoiceTotal(invoice.lineItems, invoice.discount))}
+		</div>
+		<div class="lg:center viewButton hidden text-sm lg:flex lg:text-lg">
+			<a href={`/invoices/${invoice.id}`} class="text-pastelPurple hover:text-daisyBush"><View /></a
+			>
+		</div>
+
+		<div
+			class="lg:center moreButton relative hidden text-sm lg:flex lg:text-lg"
+			use:clickOutside={() => {
+				isAdditionalMenuShowing = false;
+			}}
 		>
-		{#if isAdditionalMenuShowing}
-			<AdditionalOptions
-				options={[
-					{ label: 'Edit', icon: Edit, onClick: handleEdit, disabled: isOptionDisabled },
-					{ label: 'Delete', icon: Trash, onClick: handleDelete, disabled: false },
-					{ label: 'Send', icon: Send, onClick: handleSendInvoice, disabled: isOptionDisabled }
-				]}
-			/>
+			<button
+				class="text-pastelPurple hover:text-daisyBush"
+				on:click={() => {
+					isAdditionalMenuShowing = !isAdditionalMenuShowing;
+				}}><ThreeDots /></button
+			>
+			{#if isAdditionalMenuShowing}
+				<AdditionalOptions
+					options={[
+						{ label: 'Edit', icon: Edit, onClick: handleEdit, disabled: isOptionDisabled },
+						{ label: 'Delete', icon: Trash, onClick: handleDelete, disabled: false },
+						{ label: 'Send', icon: Send, onClick: handleSendInvoice, disabled: isOptionDisabled }
+					]}
+				/>
+			{/if}
+		</div>
+	</div>
+
+	<!--Swipe to reveal content -->
+	<div class="absolute inset-0 z-rowActions flex h-full w-full items-center justify-around">
+		<button
+			class="action-button"
+			on:click={() => {
+				triggerReset = true;
+			}}
+		>
+			<Cancel width={32} height={32} />
+			Cancel
+		</button>
+		{#if !isOptionDisabled}
+			<button class="action-button" on:click={handleEdit}>
+				<Edit width={32} height={32} />
+				Edit
+			</button>
+			<button class="action-button" on:click={handleSendInvoice}>
+				<Send width={32} height={32} />
+				Send
+			</button>
 		{/if}
+		<button class="action-button" on:click={handleDelete}>
+			<Trash width={32} height={32} />
+			Delete
+		</button>
+		<a href={`/invoices/${invoice.id}`} class="action-button">
+			<View width={32} height={32} />
+			View
+		</a>
 	</div>
 </div>
-
 <ConfirmDelete {invoice} {isModalShowing} on:close={() => (isModalShowing = false)} />
 
 {#if isInvoiceFormShowing}
@@ -103,6 +141,10 @@
 {/if}
 
 <style lang="postcss">
+	.action-button {
+		@apply flex cursor-pointer flex-col items-center justify-center font-bold text-daisyBush;
+	}
+
 	.invoice-row {
 		grid-template-areas:
 			'invoiceNumber invoiceNumber'
