@@ -40,7 +40,7 @@ export const addClient = async (clientToAdd: Client) => {
         type: 'success'
     });
 
-    return clientToAdd;
+    return { ...clientToAdd, id };
 
 
 }
