@@ -2,13 +2,17 @@
 	import Button from '$lib/components/Button.svelte';
 	import Modal from '$lib/components/Modal.svelte';
 	import { deleteInvoice } from '$lib/stores/InvoiceStore';
-	import { snackbar } from '$lib/stores/SnackbarStore';
 	import { centsToDollars, sumLineItems } from '$lib/utils/moneyHelpers';
 	import { createEventDispatcher } from 'svelte';
 
 	export let invoice: Invoice;
 	export let isModalShowing = false;
 	const dispatch = createEventDispatcher();
+
+	const handleDelete = async () => {
+		await deleteInvoice(invoice);
+		dispatch('close');
+	};
 </script>
 
 <Modal isVisible={isModalShowing} on:close>
@@ -33,14 +37,7 @@
 				isAnimated={false}
 				style="destructive"
 				label="Yes, Delete It"
-				onClick={() => {
-					dispatch('close');
-					deleteInvoice(invoice);
-					snackbar.send({
-						message: 'Your invoice was successfully deleted.',
-						type: 'success'
-					});
-				}}
+				onClick={() => handleDelete()}
 			/>
 		</div>
 	</div>
