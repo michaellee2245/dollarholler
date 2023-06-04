@@ -17,9 +17,9 @@
 		const keywords = event.detail.searchTerms;
 		clientList = $clients.filter((client) => {
 			return (
-				client?.name?.toLowerCase().includes(keywords.toLowerCase()) ||
-				client?.clientStatus?.toLowerCase().includes(keywords.toLowerCase()) ||
-				client?.email?.toLowerCase().includes(keywords.toLowerCase())
+				client.name?.toLowerCase().includes(keywords.toLowerCase()) ||
+				client.clientStatus?.toLowerCase().includes(keywords.toLowerCase()) ||
+				client.email?.toLowerCase().includes(keywords.toLowerCase())
 			);
 		});
 		console.log(keywords);
