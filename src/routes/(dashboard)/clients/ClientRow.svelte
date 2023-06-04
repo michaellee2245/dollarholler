@@ -13,12 +13,14 @@
 	import ClientForm from './ClientForm.svelte';
 	import { swipe } from '$lib/actions/Swipe';
 	import Cancel from '$lib/components/Icon/Cancel.svelte';
+	import ConfirmDelete from './ConfirmDelete.svelte';
 
 	export let client: Client;
 
 	let isAdditionalMenuShowing = false;
 	let isClientFormShowing = false;
 	let triggerReset = false;
+	let isModalShowing = false;
 
 	const closePanel = () => {
 		isClientFormShowing = false;
@@ -62,7 +64,8 @@
 	};
 
 	const handleDeleteClient = () => {
-		console.log('deleting');
+		isModalShowing = true;
+		isAdditionalMenuShowing = false;
 	};
 </script>
 
@@ -166,6 +169,14 @@
 		<ClientForm {closePanel} formStatus="edit" {client} />
 	</SlidePanel>
 {/if}
+
+<ConfirmDelete
+	{client}
+	{isModalShowing}
+	on:close={() => {
+		isModalShowing = false;
+	}}
+/>
 
 <style lang="postcss">
 	.client-row {

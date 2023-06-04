@@ -79,3 +79,25 @@ export const getClientById = async (id: string) => {
 
     console.warn('cannot find client with id' + id)
 }
+
+export const deleteClient = async (clientToDelete: Client) => {
+
+
+    const { error } = await supabase
+        .from('client')
+        .delete()
+        .eq('id', clientToDelete.id)
+
+    if (error) {
+        displayErrorMessage(error as Error);
+        return;
+    }
+
+    clients.update((prev: Client[]) => prev.filter((cur: Client) => cur.id !== clientToDelete.id))
+    snackbar.send({
+        message: "Your client was successfully deleted",
+        type: "success"
+    })
+
+    return clientToDelete;
+}
