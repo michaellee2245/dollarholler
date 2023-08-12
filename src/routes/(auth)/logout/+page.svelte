@@ -7,7 +7,7 @@
 		let { error } = await supabase.auth.signOut();
 
 		if (error) {
-			console.error(error as Error);
+			console.error(error);
 		}
 
 		goto('/login');

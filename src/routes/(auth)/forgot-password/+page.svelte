@@ -23,8 +23,10 @@
 </script>
 
 <h1 class="auth-heading">Forgot Password</h1>
-<fieldset disabled={loading}>
-	<form on:submit|preventDefault={handleSubmit}>
+<Alert {message} />
+
+<form on:submit|preventDefault={handleSubmit}>
+	<fieldset disabled={loading}>
 		<div class="field">
 			<label for="email" class="text-goldenFizz">Email Address</label>
 			<input type="email" name="email" placeholder="Your Email" required bind:value={email} />
@@ -39,6 +41,5 @@
 		<p class="mt-4 text-center text-sm text-white">
 			<a href="/login" class="underline hover:no-underline">Ready to Login?</a>
 		</p>
-	</form>
-</fieldset>
-<Alert {message} />
+	</fieldset>
+</form>

@@ -9,5 +9,6 @@ interface Props {
 export async function load({ params }: Props) {
     const id = params?.id;
     const client = await getClientById(id);
+    console.log({ client })
     return { client }
 }
